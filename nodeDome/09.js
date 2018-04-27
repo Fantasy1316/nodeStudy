@@ -10,7 +10,7 @@ function isOddOrEvenAsync(number, callback) {
       callback(null, '偶数');
     }
   } else {
-    callback(new Error('你传的不是数字数'));
+    callback(new Error('你传的不是数字'));
   }
 }
 
