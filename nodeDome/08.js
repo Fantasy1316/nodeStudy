@@ -6,7 +6,7 @@
 function getUser() {
   // 模拟耗时操作
   for (var i = 0; i < 1000000000; i++) { }
-  return { name: '赵小黑' };
+  return { name: '周杰伦' };
 }
 
 /**
@@ -18,7 +18,7 @@ function getUserAsync(callback) {
   setTimeout(function () {
     // 模拟耗时操作
     for (var i = 0; i < 1000000000; i++) { }
-    callback({ name: '赵小黑' });
+    callback({ name: '周杰伦' });
   }, 0);
 }
 
