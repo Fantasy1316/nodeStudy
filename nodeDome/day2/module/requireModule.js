@@ -17,7 +17,7 @@ function $require(id) {
     //定义exports，让它指向module的exports属性
     let exports = module.exports;
 
-    code = `(($require, module,  __filename) => {
+    code = `(($require, module, exports, __dirname, __filename) => {
         ${code}
     })($require, module, exports, __dirname, __filename);`;
 
