@@ -13,11 +13,11 @@ function $require(id) {
     const dirname = path.dirname(fiLename);
 
     let code = fs.readFileSync(fiLename, 'utf8');
-    let module = {id: fiLename, exports: {} };
+    let module = { id: fiLename, exports: {} };
     //定义exports，让它指向module的exports属性
     let exports = module.exports;
 
-    code = `(($require, module, exports, __dirname, __filename) => {
+    code = `(($require, module,  __filename) => {
         ${code}
     })($require, module, exports, __dirname, __filename);`;
 
