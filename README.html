@@ -1,0 +1,445 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+</head>
+<body>
+    <div> <h1 id="node-">Node开发第四天</h1>
+<blockquote>
+<p>核心模块和NPM、文件操作、文件流、网络操作</p>
+</blockquote>
+<h2 id="-">核心模块</h2>
+<h3 id="-">核心模块的意义</h3>
+<ul>
+<li>如果只是在服务器运行JavaScript代码，意义并不大，因为无法实现任何功能（读写文件，访问网络）。</li>
+<li>Node 的用处在于它本身还提供的一系列功能模块，用于与操作系统互动。</li>
+<li>这些核心的功能模块在 Node 中内置。</li>
+</ul>
+<h3 id="-">内置如下模块：</h3>
+<ul>
+<li><a href="http://nodejs.org/api/path.html">path</a>：处理文件路径。</li>
+<li><a href="http://nodejs.org/api/fs.html">fs</a>：操作文件系统。</li>
+<li><a href="http://nodejs.org/api/child_process.html">child_process</a>：新建子进程。</li>
+<li><a href="http://nodejs.org/api/util.html">util</a>：提供一系列实用小工具。</li>
+<li><a href="http://nodejs.org/api/http.html">http</a>：提供HTTP服务器功能。</li>
+<li><a href="http://nodejs.org/api/url.html">url</a>：用于解析URL。</li>
+<li><a href="http://nodejs.org/api/querystring.html">querystring</a>：解析URL中的查询字符串。</li>
+<li><a href="http://nodejs.org/api/crypto.html">crypto</a>：提供加密和解密功能。</li>
+<li><a href="https://nodejs.org/api/">其他</a></li>
+</ul>
+<hr>
+<h2 id="node-package">Node Package</h2>
+<blockquote>
+<p>由于Node是一套轻内核的平台，虽然提供了一系列的内置模块，但是不足以满足开发者的需求，于是乎出现了包（Package）的概念。与核心模块类似，就是将一些预先设计好的功能或者说API封装到一个文件夹，提供给开发者使用；</p>
+</blockquote>
+<h3 id="-">包的加载机制</h3>
+<ul>
+<li>与内置模块相同，包的加载同样使用<code>require</code>方法</li>
+</ul>
+<pre><code class="lang-javascript">const express = require(&#39;express&#39;);
+</code></pre>
+<ul>
+<li>加载机制也和内置模块加载机制相同</li>
+<li><p>加载注意事项：</p>
+<ul>
+<li>先在系统核心（优先级最高）的模块中找；</li>
+</ul>
+<pre><code class="lang-javascript">const fs = require(&#39;fs&#39;);
+// 永远加载内部核心模块fs
+</code></pre>
+<ul>
+<li>然后再到当前项目中 node_modules 目录中找；</li>
+</ul>
+</li>
+</ul>
+<h3 id="-">如何管理好自己的包包</h3>
+<ul>
+<li>由于<code>Node</code>本身并没有太多的功能性<code>API</code>，所以市面上涌现出大量的第三方人员开发出来的<code>Package</code>
+<img src="./img/npm.png" alt="www.npmjs.com"></li>
+<li>包的生态圈一旦繁荣起来，就必须有工具去代替人脑或者文档的方式管理</li>
+<li>这时候<code>NPM</code>诞生了</li>
+</ul>
+<h3 id="npm">NPM</h3>
+<ul>
+<li><p>随着时间的发展，NPM 出现了两层概念：</p>
+<ul>
+<li>一层含义是 Node 的开放式模块登记和管理系统，亦可以说是一个生态圈，一个社区</li>
+<li>另一层含义是 Node 默认的模块管理器，是一个命令行下的软件，用来安装和管理 Node 模块。</li>
+</ul>
+</li>
+<li><p>官方链接： <a href="https://www.npmjs.com/">https://www.npmjs.com/</a></p>
+</li>
+<li>国内加速镜像： <a href="https://npm.taobao.org/">https://npm.taobao.org/</a></li>
+</ul>
+<h3 id="-npm">安装NPM</h3>
+<ul>
+<li>NPM 不需要单独安装。默认在安装 Node 的时候，会连带一起安装 NPM。</li>
+<li>但是，Node 附带的 NPM 可能不是最新版本，最好用下面的命令，更新到最新版本。</li>
+</ul>
+<pre><code class="lang-bash">$ npm install npm -g
+</code></pre>
+<ul>
+<li>默认安装到当前系统 Node 所在目录下。</li>
+<li>由于之前使用 NVM 的方式安装的 Node 所以需要重新配置 NPM 的全局目录</li>
+</ul>
+<h3 id="-npm-">配置NPM的全局目录</h3>
+<pre><code class="lang-bash">$ npm config set prefix [pathtonpm]
+</code></pre>
+<ul>
+<li>将NPM目录配置到其他目录时，必须将该目录放到环境变量中，否则无法再全局使用</li>
+</ul>
+<h3 id="-npm-">常用NPM命令</h3>
+<ul>
+<li><a href="https://docs.npmjs.com/">https://docs.npmjs.com/</a></li>
+</ul>
+<pre><code class="lang-bash">npm config [ls|list|set|get] [name] [value]
+npm init [--yes|-y]
+npm search [name]
+npm info [name]
+npm install [--global|-g] [name]
+npm uninstall [--global|-g] [name]
+npm list [--global|-g]
+npm outdated [--global|-g]
+npm update [--global|-g] [name]
+npm run [task]
+npm cache [clean]
+</code></pre>
+<hr>
+<h2 id="-">文件操作</h2>
+<h3 id="-">相关模块</h3>
+<p>Node内核提供了很多与文件操作相关的模块，每个模块都提供了一些最基本的操作API，在NPM中也有社区提供的功能包</p>
+<h5 id="fs-">fs：</h5>
+<p>基础的文件操作 API</p>
+<h5 id="path-">path：</h5>
+<p>提供和路径相关的操作 API</p>
+<h5 id="readline-">readline：</h5>
+<p>用于读取大文本文件，一行一行读</p>
+<h5 id="fs-extra-">fs-extra（第三方）：</h5>
+<p><a href="https://www.npmjs.com/package/fs-extra">https://www.npmjs.com/package/fs-extra</a> </p>
+<h3 id="-">同步或异步调用</h3>
+<ul>
+<li>fs模块对文件的几乎所有操作都有同步和异步两种形式</li>
+<li>例如：readFile() 和 readFileSync()</li>
+<li>区别：<ul>
+<li>同步调用会阻塞代码的执行，异步则不会</li>
+<li>异步调用会将读取任务下达到任务队列，直到任务执行完成才会回调</li>
+<li>异常处理方面，同步必须使用 try catch 方式，异步可以通过回调函数的第一个参数</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-javascript">console.time(&#39;sync&#39;);
+try {
+  var data = fs.readFileSync(path.join(&#39;C:\\Users\\iceStone\\Downloads&#39;, &#39;H.mp4&#39;));
+  // console.log(data);
+} catch (error) {
+  throw error;
+}
+console.timeEnd(&#39;sync&#39;);
+
+console.time(&#39;async&#39;);
+fs.readFile(path.join(&#39;C:\\Users\\iceStone\\Downloads&#39;, &#39;H.mp4&#39;), (error, data) =&gt; {
+  if (error) throw error;
+  // console.log(data);
+});
+console.timeEnd(&#39;async&#39;);
+</code></pre>
+<h3 id="-">路径模块</h3>
+<p>在文件操作的过程中，都必须使用物理路径（绝对路径），path模块提供了一系列与路径相关的 API</p>
+<pre><code class="lang-javascript">console.log(&#39;join用于拼接多个路径部分，并转化为正常格式&#39;);
+const temp = path.join(__dirname, &#39;..&#39;, &#39;lyrics&#39;, &#39;./友谊之光.lrc&#39;);
+console.log(temp);
+
+console.log(&#39;获取路径中的文件名&#39;);
+console.log(path.basename(temp));
+
+console.log(&#39;获取路径中的文件名并排除扩展名&#39;);
+console.log(path.basename(temp, &#39;.lrc&#39;));
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;获取不同操作系统的路径分隔符&#39;);
+console.log(process.platform + &#39;的分隔符为 &#39; + path.delimiter);
+
+console.log(&#39;一般用于分割环境变量&#39;);
+console.log(process.env.PATH.split(path.delimiter));
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;获取一个路径中的目录部分&#39;);
+console.log(path.dirname(temp));
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;获取一个路径中最后的扩展名&#39;);
+console.log(path.extname(temp));
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;将一个路径解析成一个对象的形式&#39;);
+const pathObject = path.parse(temp);
+console.log(pathObject);
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;将一个路径对象再转换为一个字符串的形式&#39;);
+// pathObject.name = &#39;我终于失去了你&#39;;
+pathObject.base = &#39;我终于失去了你.lrc&#39;;
+console.log(pathObject);
+
+console.log(path.format(pathObject));
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;获取一个路径是不是绝对路径&#39;);
+console.log(path.isAbsolute(temp));
+console.log(path.isAbsolute(&#39;../lyrics/爱的代价.lrc&#39;));
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;将一个路径转换为当前系统默认的标准格式，并解析其中的./和../&#39;);
+console.log(path.normalize(&#39;c:/develop/demo\\hello/../world/./a.txt&#39;));
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;获取第二个路径相对第一个路径的相对路径&#39;);
+console.log(path.relative(__dirname, temp));
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;以类似命令行cd命令的方式拼接路径&#39;);
+console.log(path.resolve(temp, &#39;c:/&#39;, &#39;./develop&#39;, &#39;../application&#39;));
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;获取不同平台中路径的分隔符（默认）&#39;);
+console.log(path.sep);
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;允许在任意平台下以WIN32的方法调用PATH对象&#39;);
+// console.log(path.win32);
+console.log(path === path.win32);
+
+console.log(&#39;====================================&#39;);
+
+console.log(&#39;允许在任意平台下以POSIX的方法调用PATH对象&#39;);
+console.log(path === path.posix);
+</code></pre>
+<p>源码地址：
+<a href="https://github.com/nodejs/node/blob/master/lib/path.js">https://github.com/nodejs/node/blob/master/lib/path.js</a></p>
+<h3 id="-">文件读取</h3>
+<p>Node中文件读取的方式主要有：</p>
+<h4 id="fs-readfile-file-options-callback-error-data-">fs.readFile(file[, options], callback(error, data))</h4>
+<pre><code class="lang-javascript">fs.readFile(&#39;c:\\demo\1.txt&#39;, &#39;utf8&#39;, (err, data) =&gt; {
+  if (err) throw err;
+  console.log(data);
+});
+</code></pre>
+<h4 id="fs-readfilesync-file-options-">fs.readFileSync(file[, options])</h4>
+<pre><code class="lang-javascript">try {
+  const data = fs.readFileSync(&#39;c:\\demo\1.txt&#39;, &#39;utf8&#39;);
+  console.log(data);
+} catch(e) {
+  // 文件不存在，或者权限错误
+  throw e;
+}
+</code></pre>
+<h4 id="fs-createreadstream-path-options-">fs.createReadStream(path[, options])</h4>
+<pre><code class="lang-javascript">const stream = fs.createReadStream(&#39;c:\\demo\1.txt&#39;);
+let data = &#39;&#39;
+stream.on(&#39;data&#39;, (trunk) =&gt; {
+  data += trunk;
+});
+stream.on(&#39;end&#39;, () =&gt; {
+  console.log(data);
+});
+</code></pre>
+<blockquote>
+<p><em>由于Windows平台下默认文件编码是GBK，在Node中不支持，可以通过<a href="https://github.com/ashtuchkin/iconv-lite">iconv-lite</a>解决</em></p>
+</blockquote>
+<h3 id="readline-">Readline模块逐行读取文本内容</h3>
+<pre><code class="lang-javascript">const readline = require(&#39;readline&#39;);
+const fs = require(&#39;fs&#39;);
+
+const rl = readline.createInterface({
+  input: fs.createReadStream(&#39;sample.txt&#39;)
+});
+
+rl.on(&#39;line&#39;, (line) =&gt; {
+  console.log(&#39;Line from file:&#39;, line);
+});
+</code></pre>
+<h3 id="-">文件写入</h3>
+<p>Node中文件写入的方式主要有：</p>
+<h4 id="fs-writefile-file-data-options-callback-error-">fs.writeFile(file, data[, options], callback(error))</h4>
+<pre><code class="lang-javascript">fs.writeFile(&#39;c:\\demo\a.txt&#39;, new Date(), (error) =&gt; {
+  console.log(error);
+});
+</code></pre>
+<h4 id="fs-writefilesync-file-data-options-">fs.writeFileSync(file, data[, options])</h4>
+<pre><code class="lang-javascript">try {
+  fs.writeFileSync(&#39;c:\\demo\a.txt&#39;, new Date());
+} catch (error) {
+  // 文件夹不存在，或者权限错误
+  console.log(error);
+}
+</code></pre>
+<h4 id="fs-createwritestream-path-option-">fs.createWriteStream(path[,option])</h4>
+<pre><code class="lang-javascript">var streamWriter = fs.createWriteStream(&#39;c:\\demo\a.txt&#39;);
+setInterval(() =&gt; {
+  streamWriter.write(`${new Date}\n`, (error) =&gt; {
+    console.log(error);
+  });
+}, 1000);
+</code></pre>
+<h3 id="-">文件写入</h3>
+<h4 id="fs-appendfile-file-data-options-callback-err-">fs.appendFile(file,data[,options],callback(err))</h4>
+<pre><code class="lang-javascript">// 相比较之前文件流的方式，这种方式不会占用文件资源，append完成就会释放
+setInterval(() =&gt; {
+  fs.appendFile(&#39;c:\\demo\a.txt&#39;,`${new Date}\n`, (error) =&gt; {
+    console.log(error);
+  });
+}, 1000);
+</code></pre>
+<h4 id="fs-appendfilesync-file-data-options-">fs.appendFileSync(file,data[,options])</h4>
+<pre><code class="lang-javascript">setInterval(() =&gt; {
+  fs.appendFileSync(&#39;c:\\demo\a.txt&#39;,`${new Date}\n`);
+}, 1000);
+</code></pre>
+<h3 id="-">其他常见文件操作</h3>
+<h4 id="-api-">验证路径是否存在（过时的API）</h4>
+<ul>
+<li>fs.exists(path,callback(exists))</li>
+<li>fs.existsSync(path) // =&gt; 返回布尔类型 exists</li>
+</ul>
+<h4 id="-">获取文件信息</h4>
+<ul>
+<li>fs.stat(path,callback(err,stats))</li>
+<li>fs.statSync(path) // =&gt; 返回一个fs.Stats实例</li>
+</ul>
+<h4 id="-">移动文件或重命名文件或目录</h4>
+<blockquote>
+<p>与命令行相同，重命名操作也可以实现文件移动</p>
+</blockquote>
+<ul>
+<li>fs.rename(oldPath,newPath,callback)</li>
+<li>fs.renameSync(oldPath,newPath)</li>
+</ul>
+<h4 id="-">删除文件</h4>
+<ul>
+<li>fs.unlink(path,callback(err))</li>
+<li>fs.unlinkSync(path)</li>
+</ul>
+<h3 id="-">其他常见文件夹操作</h3>
+<h4 id="-">创建一个目录</h4>
+<ul>
+<li>fs.mkdir(path[,model],callback)</li>
+<li>fs.mkdirSync(path[,model])</li>
+</ul>
+<h4 id="-">删除一个空目录</h4>
+<ul>
+<li>fs.rmdir(path,callback)</li>
+<li>fs.rmdirSync(path)</li>
+</ul>
+<h4 id="-">读取一个目录</h4>
+<ul>
+<li>fs.readdir(path,callback(err,files))</li>
+<li>fs.readdirSync(path) // =&gt; 返回files</li>
+</ul>
+<h3 id="-">文件监视</h3>
+<h4 id="-markdown-">利用文件监视实现自动 markdown 文件转换</h4>
+<ul>
+<li><p>相关链接：</p>
+<ol>
+<li><a href="https://github.com/chjj/marked">https://github.com/chjj/marked</a></li>
+<li><a href="https://github.com/Browsersync/browser-sync">https://github.com/Browsersync/browser-sync</a> </li>
+</ol>
+</li>
+<li><p>实现思路：</p>
+<ol>
+<li>利用<code>fs</code>模块的文件监视功能监视指定MD文件</li>
+<li>当文件发生变化后，借助<code>marked</code>包提供的<code>markdown</code> to <code>html</code>功能将改变后的MD文件转换为HTML</li>
+<li>再将得到的HTML替换到模版中</li>
+<li>最后利用BrowserSync模块实现浏览器自动刷新</li>
+</ol>
+</li>
+</ul>
+<pre><code class="lang-javascript">const fs = require(&#39;fs&#39;);
+const path = require(&#39;path&#39;);
+var marked = require(&#39;marked&#39;);
+var bs = require(&#39;browser-sync&#39;).create();
+
+
+var target = path.join(__dirname, process.argv[2] || &#39;./README.md&#39;);
+var filename = path.basename(target, path.extname(target)) + &#39;.html&#39;;
+var targetHtml = path.join(path.dirname(target), filename);
+
+bs.init({
+  server: path.dirname(target),
+  index: filename,
+  notify: false
+});
+
+bs.reload(filename);
+
+var template = `&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;&lt;/title&gt;
+  &lt;style&gt;{{{styles}}}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;article class=&quot;markdown&quot;&gt;
+    {{{body}}}
+  &lt;/article&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+`;
+
+fs.readFile(path.join(__dirname, &#39;./markdown.css&#39;), &#39;utf8&#39;, (error, css) =&gt; {
+  if (error) throw error;
+  template = template.replace(&#39;{{{styles}}}&#39;, css);
+  var handler = (current, previous) =&gt; {
+    fs.readFile(target, &#39;utf8&#39;, (error, content) =&gt; {
+      var html = template.replace(&#39;{{{body}}}&#39;, marked(content));
+      fs.writeFile(targetHtml, html, (error) =&gt; {
+        if (!error) {
+          console.log(`updated@${new Date()}`);
+          bs.reload(filename);
+        }
+      });
+    });
+  };
+  handler();
+  fs.watchFile(target, { interval: 100 }, handler);
+});
+</code></pre>
+<hr>
+<h2 id="-">缓冲区处理</h2>
+<h3 id="-">什么是缓冲区</h3>
+<ul>
+<li>缓冲区就是内存中操作数据的容器</li>
+<li>只是数据容器而已</li>
+<li>通过缓冲区可以很方便的操作二进制数据</li>
+<li>而且在大文件操作时必须有缓冲区</li>
+</ul>
+<h3 id="-">为什么要有缓冲区</h3>
+<ul>
+<li>JavaScript是比较擅长处理字符串，但是早期的应用场景主要用于处理HTML文档，不会有太大篇幅的数据处理，也不会接触到二进制的数据。</li>
+<li>而在Node中操作数据、网络通信是没办法完全以字符串的方式操作的，简单来说</li>
+<li>所以在Node中引入了一个二进制的缓冲区的实现：Buffer</li>
+</ul>
+<hr>
+<h2 id="-">文件流</h2>
+<hr>
+<h2 id="-">网络操作</h2>
+ </div>   
+</body>
+</html>

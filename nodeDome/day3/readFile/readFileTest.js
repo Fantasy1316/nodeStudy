@@ -17,9 +17,9 @@ console.timeEnd('sync');
 
 //异步读取,非阻塞，只用1.8多毫秒
 console.time('async');
-    fs.readFile(path.join(__dirname, './test.txt'), 'utf8', (error, data) => {
-        if(error) throw Error(error);
-        console.log(data);
-    });
+fs.readFile(path.join(__dirname, './test.txt'), 'utf8', (error, data) => {
+    if (error) throw Error(error);
+    console.log(data);
+});
 console.timeEnd('async');
 
