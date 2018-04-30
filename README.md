@@ -1,7 +1,6 @@
 # Node开发第四天
 > 核心模块和NPM、文件操作、文件流、网络操作
 
-
 ## 核心模块
 
 ### 核心模块的意义
@@ -23,8 +22,6 @@
 - [querystring](http://nodejs.org/api/querystring.html)：解析URL中的查询字符串。
 - [crypto](http://nodejs.org/api/crypto.html)：提供加密和解密功能。
 - [其他](https://nodejs.org/api/)
-
-
 
 
 *****
